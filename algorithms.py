@@ -1,3 +1,5 @@
+import numpy as np
+
 def lagrange(x_values, y_values, x):
     result = 0.0
     for i in range(len(x_values)):
@@ -8,36 +10,6 @@ def lagrange(x_values, y_values, x):
         result += term
     return result
 
-def solve_tridiagonal_system(a, b, c, d):
-    """
-    Funkcja rozwiązująca układ trójdiagonalny Ax = d, gdzie:
-    - a, b, c: listy odpowiadające diagonalom macierzy A
-    - d: lista prawych stron
-
-    Zwraca:
-    - lista rozwiązań x
-    """
-
-    n = len(d)
-    c_dash = [0.0] * n
-    x = [0.0] * n
-
-    c_dash[0] = c[0] / b[0]
-    for i in range(1, n):
-        c_dash[i] = c[i] / (b[i] - a[i] * c_dash[i - 1])
-
-    d_dash = [0.0] * n
-    d_dash[0] = d[0] / b[0]
-    for i in range(1, n):
-        d_dash[i] = (d[i] - a[i] * d_dash[i - 1]) / (b[i] - a[i] * c_dash[i - 1])
-
-    x[n - 1] = d_dash[n - 1]
-    for i in range(n - 2, -1, -1):
-        x[i] = d_dash[i] - c_dash[i] * x[i + 1]
-
-    return x
-
-
 def spline(x_values, y_values, x):
     n = len(x_values)  # liczba punktów danych
     h = [x_values[i + 1] - x_values[i] for i in range(n - 1)]  # różnice między kolejnymi wartościami x
@@ -45,12 +17,16 @@ def spline(x_values, y_values, x):
     for i in range(1, n - 1):
         alpha[i] = (3 / h[i]) * (y_values[i + 1] - y_values[i]) - (3 / h[i - 1]) * (y_values[i] - y_values[i - 1])
 
-    l = [1.0] * n
-    mu = [0.0] * n
-    z = [0.0] * n
-    c = [0.0] * n
-    b = [0.0] * n
-    d = [0.0] * n
+    l = np.ones(n)
+    mu = np.zeros(n)
+    z = np.zeros(n)
+    c = np.zeros(n)
+    b = np.zeros(n)
+    d = np.zeros(n)
+
+    xi = 0.0
+    yi = 0.0
+    bi = 0.0
 
     for i in range(1, n - 1):
         l[i] = 2 * (x_values[i + 1] - x_values[i - 1]) - h[i - 1] * mu[i - 1]
