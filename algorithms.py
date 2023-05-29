@@ -27,7 +27,9 @@ def spline(x_values, y_values, x):
     xi = 0.0
     yi = 0.0
     bi = 0.0
+    ci = 0.0
 
+    # Rozwiązujemy układ równań za pomocą trójdiagonalnej eliminacji Gaussa
     for i in range(1, n - 1):
         l[i] = 2 * (x_values[i + 1] - x_values[i - 1]) - h[i - 1] * mu[i - 1]
         mu[i] = h[i] / l[i]
@@ -37,6 +39,7 @@ def spline(x_values, y_values, x):
     z[n - 1] = 0.0
     c[n - 1] = 0.0
 
+    # Na podstawie wyżej wymienionych wartości wyzaczamy b,c,d
     for j in range(n - 2, -1, -1):
         c[j] = z[j] - mu[j] * c[j + 1]
         b[j] = (y_values[j + 1] - y_values[j]) / h[j] - (h[j] / 3) * (c[j + 1] + 2 * c[j])
